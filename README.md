@@ -48,4 +48,5 @@ VUE_APP_SECRET_KEY=YOUR_API_KEY
 ----
 
 © [Bagus Nur Solayman](https://github.com/bagakibadi/)
+
 MyEmail : solaybagus2@gmail.com
