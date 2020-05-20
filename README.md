@@ -1,3 +1,9 @@
+![GitHub repo size](https://img.shields.io/github/repo-size/bagakibadi/VueJs-Library)
+![GitHub contributors](https://img.shields.io/github/contributors/bagakibadi/VueJs-Library)
+[![GitHub stars](https://img.shields.io/github/stars/bagakibadi/VueJs-Library?style=social)](https://github.com/bagakibadi/VueJs-Library/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/bagakibadi/VueJs-Library?style=social)](https://github.com/bagakibadi/VueJs-Library/network/members)
+
+
 <h1 align="center">
   <br>
   <img src="https://vuejs.org/images/logo.png" width="200">
