@@ -1,4 +1,10 @@
-# Library App
+<h1 align="center">
+  <br>
+  <img src="https://vuejs.org/images/logo.png" width="200">
+  <br>
+  Library App VueJs
+  <br>
+</h1>
 
 ## Table of Contents
 
