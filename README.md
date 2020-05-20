@@ -62,8 +62,9 @@ VUE_APP_SECRET_KEY=YOUR_API_KEY
 
 <div align="center">
     <img width="250" src="src/assets/img/Login.jpg">   
-    <img width="250" src="src/assets/img/register.jpg">
-    <img width="250" src="src/assets/img/homepage.jpg">
+    <img width="250" src="src/assets/img/Register.jpg">
+    <img width="250" src="src/assets/img/Homepage.jpg">
+    <img width="250" src="src/assets/img/Landing.jpg">
 </div>
 
 ## Contact
