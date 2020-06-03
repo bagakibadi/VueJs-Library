@@ -9,15 +9,31 @@
            <div class="from">
                 <h2 class="textregister">Register</h2>
                 <p class="wlcmtext">Welcome Back, Please Register <br> to create account</p>
+                <div class="alertdiv" v-if="code === 1">
+                    <p class="alert">Login Succes Please Check Your Email</p>
+                </div>
                 <div class="formregister">
-                    <input v-model="email" type="email" class="username"><label for="email"
-                     class="labelusername">Email</label><br>
-                    <input v-model="fullname" type="fullname" class="fullname"><label for="FullName"
-                     class="labelfullname">Full Name</label><br>
-                    <input v-model="password" type="password" class="email"><label for="Email"
-                     class="labelemail">password</label><br>
-                    <!-- <input type="password" class="password"><label for="Password"
-                     class="labelpassword">Password</label> -->
+                    <div class="div-all">
+                        <input v-model="email" type="email" class="username">
+                        <label for="email" class="labelusername">Email</label>
+                     </div>
+                    <div class="div-all">
+                        <input v-model="fullname" type="fullname" class="fullname">
+                        <label for="FullName"
+                        class="labelfullname">Full Name</label>
+                     </div>
+                    <div class="div-all">
+                        <label for="Email" class="labelemail">Password</label>
+                        <input type="password" class="email" v-model.trim="$v.password.$model"
+                         :class="{ 'is-invalid':$v.password.$error,'is-valid':!$v.password.$invalid
+                          }">
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">
+                        <span v-if="!$v.password.required"></span>
+                        <span v-if="!$v.password.minLength">
+                        </span>
+                    </div>
+                     </div>
                 </div>
                 <div class="btn-login">
                     <button @click="register" class="signup-btn">Sign up</button>
@@ -35,6 +51,9 @@
 
 <script>
 import Axios from 'axios';
+import {
+  required, minLength,
+} from 'vuelidate/lib/validators';
 
 export default {
   name: 'Register',
@@ -43,30 +62,47 @@ export default {
       email: '',
       fullname: '',
       password: '',
+      code: 0,
     };
   },
   methods: {
     register() {
-      Axios.post('http://localhost:8000/api/v1/user/', {
+      Axios.post(`${process.env.VUE_APP_API_MENU}user`, {
         email: this.email, fullname: this.fullname, password: this.password,
       })
-        .then((req) => {
-          console.log(req);
-          this.$router.push('/login');
+        .then(() => {
+          this.code = 1;
+        //   alert('Please Check Your Email');
+        //   this.$router.push('/login');
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
+        //   console.log(err);
         });
+    },
+  },
+  validations: {
+    password: {
+      required,
+      minLenght: minLength(8),
     },
   },
 };
 </script>
 // aso
 <style scoped>
+
 .page {
     display: flex;
     border: 2px;
     width: 100%;
+}
+.alertdiv{
+    background-color: #b3d7ff;
+    border-radius: 5px;
+    font-size: 18px;
+    border: 2px solid green;
+    width: 100%;
+    height: 60px;
 }
 .img1 {
     height: 100vh;
@@ -141,6 +177,30 @@ export default {
     transition: .3s;
     box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
 }
+.div-all{
+    height: 60px;
+    /* border: 1px solid green; */
+    /* z-index: 20; */
+}
+.invalid-feedback{
+    /* z-index: 10; */
+    /* top: -3px; */
+    margin-top: -60px;
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    border-radius: 5px;
+    border: 1px solid red;
+}
+.valid-feedback{
+    z-index: 10;
+    margin-top: -60px;
+    position: absolute;
+    width: 100%;
+    height: 60px;
+    border-radius: 5px;
+    border: 1px solid green;
+}
 .fullname {
     font-size: 15px;
     padding-top: 13px;
@@ -174,6 +234,7 @@ export default {
     box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
 }
 .password {
+    position: absolute;
     font-size: 15px;
     padding-top: 13px;
     padding-left: 15px;
@@ -188,6 +249,7 @@ export default {
     outline: none;
     transition: .3s;
     box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
+    z-index: 5;
 }
 .formregister {
     width: 30%;
@@ -202,18 +264,20 @@ export default {
 }
 .labelfullname {
     position: absolute;
-    top: 63px;
+    /* top: 63px; */
+    /* top: 5px; */
     left: 15px;
 }
 .labelemail {
     position: absolute;
-    top: 125px;
+    /* top: 125px; */
     left: 15px;
 }
 .labelpassword {
     position: absolute;
-    top: 183px;
-    left: 15px;
+    margin-top: 20px;
+    /* top: 183px; */
+    /* left: 15px; */
 }
 .btn-login {
     font-size: 17px;
@@ -251,5 +315,24 @@ export default {
 }
 .tengahtext {
     color: #D0CCCC;
+}
+@media only screen and (max-width: 800px) {
+    .img1 {
+        display: none;
+    }
+    .from {
+        margin-left: 10%;
+        width: 90vw;
+    }
+    .login {
+        width: 100%;
+    }
+    .formregister {
+        width: 90%;
+
+    }
+    .btn-login {
+        width: 100vw;
+    }
 }
 </style>

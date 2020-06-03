@@ -95,7 +95,7 @@ export default {
       document.querySelector('.modal-add').classList.toggle('modal-on');
     },
     submit() {
-      axios.post('http://localhost:8000/book/', this.dataUser).then((res) => {
+      axios.post(`${process.env.VUE_APP_API_MENU}book`, this.dataUser).then((res) => {
         // res.data;
         console.log(res);
       });

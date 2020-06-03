@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar">
+    <div class="nvbr">
             <div class="select">
                 <select class="">
                     <option value="">All Catagories</option>
@@ -9,7 +9,7 @@
                 </select>
             </div>
             <div class="search">
-                <input type="text" class="search-box" placeholder="Search book">
+                <input type="text" class="search-box" @input="searchBook" placeholder="Search book">
             </div>
             <div class="library">
                 <a href="index.html"><img src="../../assets/img/buku.png" alt=""></a>
@@ -25,21 +25,22 @@ export default {
 </script>
 
 <style scoped>
-.navbar {
+.nvbr {
     position: fixed;
-    top: 0;
+    padding: 0px 50px;
     width: 100%;
-    height: 60px;
+    box-sizing: border-box;
     background: white;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     z-index: 9;
 }
 .select {
+    position: relative;
     display: flex;
-    width: 340px;
-    justify-content: center;
-    align-items: center;
+    width: 20%;
 }
 .login a {
     position: relative;
@@ -57,10 +58,9 @@ export default {
     font-size: 17px;
 }
 .search {
-    position: absolute;
+    position: relative;
     display: flex;
-    width: 100%;
-    height: 60px;
+    width: 45%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -80,16 +80,27 @@ export default {
     border-radius: 20px;
 }
 .library {
-    position: absolute;
-    width: 100%;
+    position: relative;
+    width: 10%;
     height: 60px;
     display: flex;
-    justify-content: flex-end;
     align-items: center;
-    right: 40px;
 }
 .library img {
     width: 50px;
     height: 50px;
+}
+@media only screen and (max-width: 800px) {
+    .select {
+        display: none;
+    }
+    .search {
+        /* display: none; */
+        left: 130px;
+        width: 10%;
+    }
+    .search input{
+        width: 200px;
+    }
 }
 </style>

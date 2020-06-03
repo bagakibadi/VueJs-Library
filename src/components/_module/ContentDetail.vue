@@ -14,16 +14,44 @@
     <p class="text">{{book.description}}</p>
   </div>
   <div class="button">
-    <button class="btnborrow">Borrow</button>
+    <button @click="borrow" class="btnborrow">Borrow</button>
   </div>
 </div>
 </template>
 
 <script>
+import Axios from 'axios';
 
 export default {
   name: 'ContentDetail',
   props: ['book'],
+  methods: {
+    borrow() {
+      Axios.post(`${process.env.VUE_APP_API_MENU}borrowbook`, {
+        id_user: this.dataUser,
+        id_book: this.book.id,
+      })
+        .then((res) => {
+          // eslint-disable-next-line no-unused-expressions
+          res.data;
+          this.$router.push('/history');
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+  created() {
+    Axios.get(`${process.env.VUE_APP_API_MENU}user/${localStorage.idUser}`)
+      .then((res) => {
+        this.dataUser = res.data.result[0].id;
+        console.log(this.dataUser);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+
 };
 </script>
 
@@ -33,6 +61,8 @@ export default {
     width: 50vw;
 }
 .imgdilan {
+    position: relative;
+    z-index: 1;
     width: 200px;
     height: 290px;
     float: right;
@@ -81,5 +111,21 @@ export default {
     outline: none;
     margin-left: 6%;
     margin-bottom: 100px;
+}
+@media only screen and (max-width: 800px) {
+  .imgdilan{
+    display: none;
+  }
+  .btnborrow {
+        margin: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        float: left;
+        margin-bottom: 100px;
+    }
+    .container2 {
+        margin: 20px 20px;
+        width: 90vw;
+    }
 }
 </style>

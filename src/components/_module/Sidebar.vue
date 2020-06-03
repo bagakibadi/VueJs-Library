@@ -7,10 +7,13 @@
     </div>
       <ul>
         <li class="btn-sidebar"><a href="#" class="btn-sidebar1">Explorer</a></li>
-        <li class="btn-sidebar"><a href="#" class="btn-sidebar1">History</a></li>
-        <li class="btn-sidebar"><a data-toggle="modal"
-        data-target=".bd-example-modal-lg" class="btn-sidebar1">Add Book*
-          </a></li>
+        <li class="btn-sidebar"><router-link to="/history"
+        class="btn-sidebar1">History</router-link></li>
+        <div v-if="dataUser.result[0].role_id == 1">
+          <li class="btn-sidebar"><a data-toggle="modal"
+          data-target=".bd-example-modal-lg" class="btn-sidebar1">Add Book*
+            </a></li>
+        </div>
         <li class="btn-sidebar"><router-link to="/logout"
         class="btn-sidebar1">Log Out</router-link></li>
       </ul>
@@ -19,8 +22,6 @@
       </button>
   </div>
   <div>
-    <button type="button" class="btn btn-primary" data-toggle="modal"
-    data-target=".bd-example-modal-lg" data-whatever="@mdo">Open modal for @mdo</button>
     <div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
@@ -32,39 +33,44 @@
             </button>
           </div>
           <div class="modal-body">
-            <form>
+            <form enctype="multipart/form-data" @submit="AddBook">
               <div class="form-group">
                 <label for="title-book" class="col-form-label">Title:</label>
-                <input type="text" class="form-control" id="title-book">
+                <input type="text" class="form-control" id="title-book" v-model="title" >
               </div>
               <div class="form-group">
-                <label for="image-book" class="col-form-control">Image: </label>
-                <input type="file" class="form-control" id="image-book">
+                <label for="message-text" class="col-form-label">Description:</label>
+                <textarea class="form-control" id="message-text" v-model="description" ></textarea>
               </div>
               <div class="form-group">
                 <label for="author-book" class="col-form-label">Author:</label>
-                <input type="text" class="form-control" id="author-book">
+                <input type="text" class="form-control" id="author-book" v-model="author" >
+              </div>
+              <div class="form-group">
+                <label for="status" class="col-form-label">Status:</label>
+                <input type="text" class="form-control" id="status" v-model="status" >
+              </div>
+              <div class="form-group">
+                <label for="image-book" class="col-form-control">Image: </label>
+                <input type="file" ref="file" class="form-control" id="image-book">
               </div>
               <div class="form-group">
                 <label for="category-book" class="col-form-label">Category:</label>
-                <select class="custom-select">
+                <select v-model="id_category"  class="custom-select">
                   <option selected>Select Category</option>
                   <option value="1">Anak-Anak</option>
                   <option value="2">Agama</option>
                   <option value="3">Pengembangan Diri</option>
-                  <option value="3">Komik</option>
-                  <option value="3">Novel</option>
+                  <option value="4">Komik</option>
+                  <option value="5">Novel</option>
                 </select>
-              </div>
-              <div class="form-group">
-                <label for="message-text" class="col-form-label">Description:</label>
-                <textarea class="form-control" id="message-text"></textarea>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary"
+                  data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+                </div>
               </div>
             </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary">Save</button>
           </div>
         </div>
       </div>
@@ -84,22 +90,46 @@ export default {
       active: '',
       btnmove: '',
       dataUser: {},
+      title: '',
+      description: '',
+      author: '',
+      image: '',
+      status: '',
+      id_category: '',
+      dataBook: {},
     };
   },
   methods: {
+    AddBook(e) {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('title', this.title);
+      formData.append('description', this.description);
+      formData.append('author', this.author);
+      formData.append('image', this.$refs.file.files[0]);
+      formData.append('status', this.status);
+      formData.append('id_category', this.id_category);
+      Axios.post(`${process.env.VUE_APP_API_MENU}book`, formData)
+        .then((res) => {
+          console.log(res);
+          this.dataBook = res.data;
+          this.$router.go('/home');
+        })
+        .catch(() => {
+          this.$router.go();
+        });
+    },
     change() {
       document.querySelector('.sidebar').classList.toggle('active');
       document.querySelector('.sidebarBtn').classList.toggle('btnmove');
     },
-    // showModal() {
-    //   document.querySelector('.modal').classList.toggle('modalTarget');
-    // },
   },
 
   created() {
-    Axios.get(`http://localhost:8000/api/v1/user/${localStorage.idUser}`)
+    Axios.get(`${process.env.VUE_APP_API_MENU}user/${localStorage.idUser}`)
       .then((res) => {
         this.dataUser = res.data;
+        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);

@@ -1,7 +1,9 @@
 <template>
   <div class="tampung">
-                <a href="#" class="btn-before">></a>
-                <a href="#" class="btn-next">></a>
+                <a href="" class="btn-before"><i class='fas fa-angle-left'
+                 style='font-size:36px'></i></a>
+                <a href="" class="btn-next"><i class='fas fa-angle-right'
+                 style='font-size:36px'></i></a>
                 <div class="penampung">
                     <div class="header">
                         <div class="carousel-header">
@@ -52,10 +54,10 @@ export default {
 .btn-next {
     position: absolute;
     right: 5%;
-    padding-left: 15px;
-    padding-bottom: 5px;
+    padding-left: 18px;
+    /* padding-bottom: 5px; */
     padding-right: 15px;
-    padding-top: 3px;
+    padding-top: 5px;
     border-radius: 100px;
     background: white;
     text-decoration: none;
@@ -68,9 +70,9 @@ export default {
     position: absolute;
     left: 5%;
     padding-left: 15px;
-    padding-bottom: 5px;
-    padding-right: 15px;
-    padding-top: 3px;
+    /* padding-bottom: 5px; */
+    padding-right: 18px;
+    padding-top: 5px;
     border-radius: 100px;
     background: white;
     text-decoration: none;

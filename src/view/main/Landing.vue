@@ -78,7 +78,7 @@ export default {
 }
 .library {
     position: relative;
-    width: 100vw;
+    width: 100%;
     display: flex;
     align-items: center;
     font-size: 20px;
@@ -119,7 +119,7 @@ export default {
     position: relative;
     overflow: hidden;
     height: 573px;
-    width: 100vw;
+    width: 100%;
 }
 .text-header {
     overflow: hidden;
@@ -198,7 +198,7 @@ export default {
     text-align: center;
 }
 .testi {
-    width: 100vw;
+    width: 100%;
     height: auto;
     background: #f9f9f9;
     display: flex;

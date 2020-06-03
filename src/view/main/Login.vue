@@ -18,11 +18,21 @@
                     <p class="alert">{{error}}</p>
                 </div>
                 <div class="emaildiv">
-                    <label for="email" class="labelemail">Email Address</label><br>
+                    <label for="email" class="labelemail">Email Address</label>
                     <input v-model="email" id="email" type="email" class="email">
                 </div>
-                <input v-model="password" type="password" id="password" class="password"><br>
-                <label for="password" class="labelpassword">Password</label>
+                <div class="password-div">
+                    <label for="password" class="labelpassword" >Password</label>
+                    <input type="password" id="password" class="password"
+                     v-model.trim="$v.password.$model" :class="{
+                     'is-invalid':$v.password.$error,'is-valid':!$v.password.$invalid }">
+                    <div class="valid-feedback"></div>
+                    <div class="invalid-feedback">
+                        <span v-if="!$v.password.required"></span>
+                        <span v-if="!$v.password.minLength">
+                        </span>
+                    </div>
+                </div>
                 <div class="check">
                     <input type="checkbox" class="checkbox" >
                     <label for="checkbox" class="labelcheckbox">Remember Me</label>
@@ -44,6 +54,10 @@
 
 <script>
 import axios from 'axios';
+import {
+  required, minLength,
+} from 'vuelidate/lib/validators';
+
 
 export default {
   name: 'Login',
@@ -51,58 +65,53 @@ export default {
     return {
       email: '',
       password: '',
-      error: false,
+      error: '',
       code: 0,
     };
   },
-  updated() {
-    if (!localStorage.password && !localStorage.idUser) {
-      this.$router.push('/login');
-    } else {
-      this.$router.push('/home');
-    }
-  },
   methods: {
     login() {
-      axios.post('http://localhost:8000/api/v1/user/login', {
+    //   console.log(process.env.VUE_APP_API_MENU);
+      axios.post(`${process.env.VUE_APP_API_MENU}user/login`, {
         email: this.email, password: this.password,
       })
         .then((req) => {
           this.loginSucces(req);
-        //   console.log(req);
         })
         .catch(() => {
-          this.loginFailed();
         });
     },
-    loginSucces(request) {
-      if (request.data.result.status === 0) {
-        // this.activation();
+    loginSucces(req) {
+      console.log(req.token);
+      if (!req.data.token) {
+        this.loginFailed(req);
+      } else if (req.data.result.status === 0) {
         this.code = 2;
-        this.error = 'Activate Email First';
-        return;
-      }
-      // console.log(request.data);
-      if (request.data.status_code !== 200) {
-        this.loginFailed(request);
-        //   return;
+        this.error = 'Aktivasi Email Dahulu';
+      } else if (this.password <= 8) {
+        this.code = 1;
+        this.error = '';
+      } else if (!this.password) {
+        this.code = 1;
+        this.error = 'Password Required';
       } else {
-        this.code = 2;
-        localStorage.password = request.data.result[0].password;
-        localStorage.idUser = request.data.result[0].id;
-        this.error = false;
+        localStorage.password = req.data.result.password;
+        localStorage.idUser = req.data.result.id;
+        localStorage.token = req.data.token;
+        localStorage.role_id = req.data.result.role_id;
+        this.code = 0;
         this.$router.replace('/home');
       }
     },
-    activation() {
-      this.code = 2;
-      this.error = 'Activate Email First';
-    },
-    loginFailed(data) {
-      this.error = data.data.err;
+    loginFailed(req) {
+      this.error = req.data.err;
       this.code = 1;
-      delete localStorage.password;
-      delete localStorage.idUser;
+    },
+  },
+  validations: {
+    password: {
+      required,
+      minLenght: minLength(8),
     },
   },
 };
@@ -122,6 +131,24 @@ export default {
     background-position: center center;
     background-size: cover;
     color: white;
+}
+.invalid-feedback{
+    z-index: 10;
+    top: -3px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 1px solid red;
+}
+.valid-feedback{
+    z-index: 10;
+    top: -3px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 1px solid green;
 }
 .img1 h2 {
     font-weight: 900;
@@ -195,7 +222,7 @@ export default {
 }
 .emaildiv{
     position: relative;
-    border: 1px solid #E0E0E0;
+    /* border: 1px solid #E0E0E0; */
     width: 100%;
     height: 60px;
     border-radius: 5px;
@@ -213,6 +240,29 @@ export default {
     padding-top: 13px;
     padding-left: 15px;
     transition: .3s;
+    box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
+}
+.password-div{
+    position: relative;
+    /* border: 1px solid #E0E0E0; */
+    width: 100%;
+    height: 60px;
+    border-radius: 5px;
+}
+.password{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    font-size: 15px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #E0E0E0;
+    padding-top: 13px;
+    padding-left: 15px;
+    transition: .3s;
+    box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
 }
 
 .email:focus{
@@ -228,7 +278,7 @@ export default {
     z-index: 1;
 }
 
-.password {
+/* .password {
     font-size: 15px;
     padding-top: 13px;
     padding-left: 15px;
@@ -243,17 +293,18 @@ export default {
     outline: none;
     transition: .3s;
     box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
-}
+} */
 .password:focus{
     border-color:dodgerBlue;
     box-shadow: 0px 20px 20px rgba(0, 0, 0, 0.1);
 }
 .labelpassword{
-    position: relative;
+    position: absolute;
     font-size: 17px;
     color: #D0CCCC;
-    top: -55px;
+    top: 5px;
     left: 15px;
+    z-index: 1;
 }
 .labelcheckbox{
     font-size: 17px;
@@ -309,6 +360,22 @@ export default {
 .tengahtext {
     color: #D0CCCC;
 }
-
+@media only screen and (max-width: 800px) {
+    .img1 {
+        display: none;
+    }
+    .from {
+        margin-left: 10%;
+        width: 100%;
+    }
+    .login {
+        width: 90vw;
+    }
+    .forgot {
+        /* margin-right: 40%; */
+        position: absolute;
+        margin-left: 30%;
+    }
+}
 
 </style>
